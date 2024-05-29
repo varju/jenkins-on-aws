@@ -216,7 +216,7 @@ class JenkinsLeader(core.Stack):
                     "ecs:RunTask"
                 ],
                 resources=[
-                    "arn:aws:ecs:{0}:{1}:task-definition/fargate-cloud*".format(
+                    "arn:aws:ecs:{0}:{1}:task-definition/jenkins-fargate*".format(
                         self.region,
                         self.account,
             )
