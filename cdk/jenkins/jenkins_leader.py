@@ -46,7 +46,7 @@ class JenkinsLeader(core.Stack):
                     'worker_stack': self.worker.stack_name,
                     'cluster_arn': self.cluster.cluster.cluster_arn,
                     'aws_region': config['DEFAULT']['region'],
-                    'jenkins_url': config['DEFAULT']['jenkins_url'], 
+                    'jenkins_url': config['DEFAULT']['jenkins_url'],
                     'subnet_ids': ",".join([x.subnet_id for x in self.vpc.vpc.private_subnets]),
                     'security_group_ids': self.worker.worker_security_group.security_group_id,
                     'execution_role_arn': self.worker.worker_execution_role.role_arn,
@@ -101,7 +101,7 @@ class JenkinsLeader(core.Stack):
                     'worker_stack': self.worker.stack_name,
                     'cluster_arn': self.cluster.cluster.cluster_arn,
                     'aws_region': config['DEFAULT']['region'],
-                    'jenkins_url': config['DEFAULT']['jenkins_url'],  
+                    'jenkins_url': config['DEFAULT']['jenkins_url'],
                     'subnet_ids': ",".join([x.subnet_id for x in self.vpc.vpc.private_subnets]),
                     'security_group_ids': self.worker.worker_security_group.security_group_id,
                     'execution_role_arn': self.worker.worker_execution_role.role_arn,
@@ -215,7 +215,7 @@ class JenkinsLeader(core.Stack):
                     "ecs:RunTask"
                 ],
                 resources=[
-                    "arn:aws:ecs:{0}:{1}:task-definition/fargate-workers*".format(
+                    "arn:aws:ecs:{0}:{1}:task-definition/fargate-cloud*".format(
                         self.region,
                         self.account,
             )

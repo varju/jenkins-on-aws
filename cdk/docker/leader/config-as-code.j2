@@ -5,13 +5,13 @@ jenkins:
         # Credentials should not be set locally. Use IAM roles assigned to the container.
         credentialsId: False
         regionName: {{AWS_REGION}}
-        name: fargate-workers
+        name: fargate-cloud
         jenkinsUrl: {{JENKINS_URL}}
         templates:
           - label: fargate-workers
             templateName: fargate-worker-nodes
             # Build image and store in ECR. Benefits: fast download time, control image on your own
-            image: jenkins/jnlp-slave
+            image: jenkins/inbound-agent
             launchType: FARGATE
             networkMode: awsvpc
             # Soft memory limit
