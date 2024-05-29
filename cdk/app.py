@@ -11,7 +11,7 @@ from jenkins.jenkins_worker import JenkinsWorker
 config = ConfigParser()
 config.read('config.ini')
 
-stack_name = config['DEFAULT']['stack_name'] 
+stack_name = config['DEFAULT']['stack_name']
 account = getenv('CDK_DEFAULT_ACCOUNT')
 region = getenv('CDK_DEFAULT_REGION')
 
@@ -22,5 +22,10 @@ network = Network(app, stack_name + 'Network')
 ecs_cluster = ECSCluster(app, stack_name + 'ECS', vpc=network.vpc, service_discovery_namespace=service_discovery_namespace)
 jenkins_workers = JenkinsWorker(app, stack_name + "Worker", vpc=network.vpc, cluster=ecs_cluster)
 jenkins_leader_service = JenkinsLeader(app, stack_name + 'JenkinsLeader', cluster=ecs_cluster, vpc=network, worker=jenkins_workers)
+
+core.Tag.add(app, key='Name', value=stack_name)
+core.Tag.add(app, key='Department', value='501')
+core.Tag.add(app, key='DevTeam', value='Voyager')
+core.Tag.add(app, key='Environment', value='Development')
 
 app.synth()
