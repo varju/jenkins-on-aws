@@ -4,9 +4,6 @@ FROM --platform=linux/amd64 jenkins/jenkins:2.452.1-lts
 COPY plugins.txt /usr/share/jenkins/ref/plugins.txt
 RUN jenkins-plugin-cli --plugin-file /usr/share/jenkins/ref/plugins.txt
 
-COPY modify_casc.py /modify_casc.py
-COPY config-as-code.j2 /config-as-code.j2
-
 USER root
 
 RUN apt-get update &&\
@@ -16,6 +13,9 @@ RUN apt-get update &&\
     touch /config-as-code.yaml &&\
     chown jenkins: /config-as-code.yaml &&\
     sed -i '/\/bin\/bash*/a \\n\/modify_casc.py' /usr/local/bin/jenkins.sh
+
+COPY modify_casc.py /modify_casc.py
+COPY config-as-code.j2 /config-as-code.j2
 
 # User back to jenkins
 USER jenkins

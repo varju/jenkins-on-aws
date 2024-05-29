@@ -29,4 +29,13 @@ jenkins:
                 value: {{LOG_GROUP}}
               - name: awslogs-stream-prefix
                 value: {{LOG_STREAM_PREFIX}}
-
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+       - id: varju
+         password: "DRV!rzn1anx4ktb@hfh"
+  authorizationStrategy:
+    loggedInUsersCanDoAnything:
+      allowAnonymousRead: true
+  numExecutors: 0
