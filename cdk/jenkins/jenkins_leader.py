@@ -190,7 +190,8 @@ class JenkinsLeader(core.Stack):
                     "ecs:DescribeContainerInstances",
                     "ecs:ListTaskDefinitions",
                     "ecs:DescribeTaskDefinition",
-                    "ecs:DescribeTasks"
+                    "ecs:DescribeTasks",
+                    "ecs:TagResource",
                 ],
                 resources=[
                     "*"
