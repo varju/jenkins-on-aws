@@ -1,4 +1,4 @@
-FROM jenkins/jenkins:2.452.1-lts
+FROM --platform=linux/amd64 jenkins/jenkins:2.452.1-lts
 
 # Install custom plugins
 COPY plugins.txt /usr/share/jenkins/ref/plugins.txt
