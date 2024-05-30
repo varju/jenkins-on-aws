@@ -18,8 +18,8 @@ def main():
         SECURITY_GROUP_IDS=getenv('security_group_ids'),
         EXECUTION_ROLE_ARN=getenv('execution_role_arn'),
         TASK_ROLE_ARN=getenv('task_role_arn'),
-        LOG_GROUP=getenv('worker_log_group'),
-        LOG_STREAM_PREFIX=getenv('worker_log_stream_prefix'),
+        LOG_GROUP=getenv('agent_log_group'),
+        LOG_STREAM_PREFIX=getenv('agent_log_stream_prefix'),
         ADMIN_USERNAME=getenv('admin_username'),
         ADMIN_PASSWORD=getenv('admin_password'),
     )))

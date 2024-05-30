@@ -7,16 +7,16 @@ from aws_cdk import (
 from constructs import Construct
 
 config = ConfigParser()
-config.read('config.ini')
+config.read("config.ini")
 
 
-class Network(Stack):
+class Network(Construct):
 
-    def __init__(self, scope: Construct, id: str, **kwargs):
-        super().__init__(scope, id, **kwargs)
+    def __init__(self, scope: Stack):
+        super().__init__(scope, "Network")
 
         self.vpc = aws_ec2.Vpc(
-            self, "Vpc",
-            ip_addresses=aws_ec2.IpAddresses.cidr(config['DEFAULT']['cidr']),
+            self,
+            "Vpc",
+            ip_addresses=aws_ec2.IpAddresses.cidr(config["DEFAULT"]["cidr"]),
         )
-

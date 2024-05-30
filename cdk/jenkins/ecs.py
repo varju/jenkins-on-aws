@@ -6,20 +6,22 @@ from aws_cdk import (
 )
 from constructs import Construct
 
+from .network import Network
+
 config = ConfigParser()
-config.read('config.ini')
+config.read("config.ini")
 
 
-class ECSCluster(Stack):
+class ECSCluster(Construct):
 
-    def __init__(self, scope: Construct, id: str, vpc, service_discovery_namespace, **kwargs):
-        super().__init__(scope, id, **kwargs)
-        self.vpc = vpc
-        self.service_discovery_namespace = service_discovery_namespace
+    def __init__(self, scope: Stack, network: Network, service_discovery_namespace):
+        super().__init__(scope, "ECSCluster")
 
-        # Create VPC for cluster - best practice is to isolate jenkins to its own vpc
         self.cluster = aws_ecs.Cluster(
-            self, "ECSCluster",
-            vpc=self.vpc,
-            default_cloud_map_namespace=aws_ecs.CloudMapNamespaceOptions(name=service_discovery_namespace)
+            self,
+            "Cluster",
+            vpc=network.vpc,
+            default_cloud_map_namespace=aws_ecs.CloudMapNamespaceOptions(
+                name=service_discovery_namespace
+            ),
         )
