@@ -52,7 +52,8 @@ class JenkinsLeader(core.Stack):
                     'execution_role_arn': self.worker.worker_execution_role.role_arn,
                     'task_role_arn': self.worker.worker_task_role.role_arn,
                     'worker_log_group': self.worker.worker_logs_group.log_group_name,
-                    'worker_log_stream_prefix': self.worker.worker_log_stream.log_stream_name
+                    'worker_log_stream_prefix': self.worker.worker_log_stream.log_stream_name,
+                    'TZ': 'America/Vancouver',
                 },
             )
 
