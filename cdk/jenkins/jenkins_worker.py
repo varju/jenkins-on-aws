@@ -1,19 +1,20 @@
+from configparser import ConfigParser
+
 from aws_cdk import (
     aws_ecr_assets as ecr,
     aws_ec2 as ec2,
     aws_iam as iam,
     aws_logs as logs,
-    core
+    Stack,
 )
-
-from configparser import ConfigParser
+from constructs import Construct
 
 config = ConfigParser()
 config.read('config.ini')
 
-class JenkinsWorker(core.Stack):
+class JenkinsWorker(Stack):
 
-    def __init__(self, scope: core.Stack, id: str, vpc, cluster, **kwargs) -> None:
+    def __init__(self, scope: Construct, id: str, vpc, cluster, **kwargs) -> None:
         super().__init__(scope, id, **kwargs)
         self.vpc = vpc
         self.cluster = cluster

@@ -1,20 +1,22 @@
+from configparser import ConfigParser
+
 from aws_cdk import (
     aws_ec2,
-    core
+    Stack,
 )
-from configparser import ConfigParser
+from constructs import Construct
 
 config = ConfigParser()
 config.read('config.ini')
 
 
-class Network(core.Stack):
+class Network(Stack):
 
-    def __init__(self, scope: core.Stack, id: str, **kwargs):
+    def __init__(self, scope: Construct, id: str, **kwargs):
         super().__init__(scope, id, **kwargs)
 
         self.vpc = aws_ec2.Vpc(
             self, "Vpc",
-            cidr=config['DEFAULT']['cidr'],
+            ip_addresses=aws_ec2.IpAddresses.cidr(config['DEFAULT']['cidr']),
         )
 

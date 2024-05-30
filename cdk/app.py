@@ -1,8 +1,13 @@
 #!/usr/bin/env python3
 
-from aws_cdk import core
 from os import getenv
 from configparser import ConfigParser
+
+from aws_cdk import (
+    App,
+    Tags,
+)
+
 from jenkins.network import Network
 from jenkins.ecs import ECSCluster
 from jenkins.jenkins_leader import JenkinsLeader
@@ -17,15 +22,15 @@ region = getenv('CDK_DEFAULT_REGION')
 
 service_discovery_namespace = 'jenkins'
 
-app = core.App()
+app = App()
 network = Network(app, stack_name + 'Network')
 ecs_cluster = ECSCluster(app, stack_name + 'ECS', vpc=network.vpc, service_discovery_namespace=service_discovery_namespace)
 jenkins_workers = JenkinsWorker(app, stack_name + "Worker", vpc=network.vpc, cluster=ecs_cluster)
 jenkins_leader_service = JenkinsLeader(app, stack_name + 'JenkinsLeader', cluster=ecs_cluster, vpc=network, worker=jenkins_workers)
 
-core.Tags.of(app).add(key='Name', value=stack_name)
-core.Tags.of(app).add(key='Department', value='501')
-core.Tags.of(app).add(key='DevTeam', value='Voyager')
-core.Tags.of(app).add(key='Environment', value='Development')
+Tags.of(app).add(key='Name', value=stack_name)
+Tags.of(app).add(key='Department', value='501')
+Tags.of(app).add(key='DevTeam', value='Voyager')
+Tags.of(app).add(key='Environment', value='Development')
 
 app.synth()

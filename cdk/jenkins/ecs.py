@@ -1,19 +1,20 @@
+from configparser import ConfigParser
+
 from aws_cdk import (
     aws_ecs,
     aws_ec2,
     aws_efs,
-    core
+    Stack,
 )
-
-from configparser import ConfigParser
+from constructs import Construct
 
 config = ConfigParser()
 config.read('config.ini')
 
 
-class ECSCluster(core.Stack):
+class ECSCluster(Stack):
 
-    def __init__(self, scope: core.Stack, id: str, vpc, service_discovery_namespace, **kwargs):
+    def __init__(self, scope: Construct, id: str, vpc, service_discovery_namespace, **kwargs):
         super().__init__(scope, id, **kwargs)
         self.vpc = vpc
         self.service_discovery_namespace = service_discovery_namespace

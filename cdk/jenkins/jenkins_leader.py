@@ -1,4 +1,5 @@
 import os
+from configparser import ConfigParser
 
 from aws_cdk import (
     aws_ecs_patterns as ecs_patterns,
@@ -9,18 +10,18 @@ from aws_cdk import (
     aws_iam as iam,
     aws_logs as logs,
     aws_elasticloadbalancingv2 as elb,
-    core
+    Duration,
+    Stack,
 )
-
-from configparser import ConfigParser
+from constructs import Construct
 
 config = ConfigParser()
 config.read('config.ini')
 
 
-class JenkinsLeader(core.Stack):
+class JenkinsLeader(Stack):
 
-    def __init__(self, scope: core.Stack, id: str, cluster, vpc, worker, **kwargs) -> None:
+    def __init__(self, scope: Construct, id: str, cluster, vpc, worker, **kwargs) -> None:
         super().__init__(scope, id, **kwargs)
         self.cluster = cluster
         self.vpc = vpc
@@ -155,7 +156,7 @@ class JenkinsLeader(core.Stack):
                         container_port=8080,
                     )
                 ],
-                deregistration_delay=core.Duration.seconds(10)
+                deregistration_delay=Duration.seconds(10)
             )
 
         # Opening port 5000 for leader <--> worker communications
