@@ -40,8 +40,8 @@ jenkins:
     local:
       allowsSignup: false
       users:
-       - id: varju
-         password: "DRV!rzn1anx4ktb@hfh"
+       - id: {{ADMIN_USERNAME}}
+         password: {{ADMIN_PASSWORD}}
   authorizationStrategy:
     loggedInUsersCanDoAnything:
       allowAnonymousRead: true
