@@ -29,6 +29,13 @@ jenkins:
                 value: {{LOG_GROUP}}
               - name: awslogs-stream-prefix
                 value: {{LOG_STREAM_PREFIX}}
+            tags:
+            - name: Department
+              value: "501"
+            - name: DevTeam
+              value: Voyager
+            - name: Environment
+              value: Development
   securityRealm:
     local:
       allowsSignup: false
