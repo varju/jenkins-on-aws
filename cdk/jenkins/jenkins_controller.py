@@ -6,6 +6,7 @@ from aws_cdk import (
     aws_ecs as ecs,
     aws_ecr_assets as ecr,
     aws_ec2 as ec2,
+    aws_efs,
     aws_servicediscovery as sd,
     aws_iam as iam,
     Stack,
@@ -64,24 +65,51 @@ class JenkinsController(Construct):
         )
 
         # Create the Jenkins controller service
-        fargate_service = (
-            ecs_patterns.ApplicationLoadBalancedFargateService(
-                self,
-                "FargateService",
-                cpu=int(config["DEFAULT"]["fargate_cpu"]),
-                memory_limit_mib=int(config["DEFAULT"]["fargate_memory_limit_mib"]),
-                cluster=ecs_cluster.cluster,
-                desired_count=1,
-                enable_ecs_managed_tags=True,
-                task_image_options=self.jenkins_task,
-                cloud_map_options=ecs.CloudMapOptions(
-                    name="controller", dns_record_type=sd.DnsRecordType("A")
-                ),
-            )
+        fargate_service = ecs_patterns.ApplicationLoadBalancedFargateService(
+            self,
+            "FargateService",
+            cpu=int(config["DEFAULT"]["fargate_cpu"]),
+            memory_limit_mib=int(config["DEFAULT"]["fargate_memory_limit_mib"]),
+            cluster=ecs_cluster.cluster,
+            desired_count=1,
+            enable_ecs_managed_tags=True,
+            task_image_options=self.jenkins_task,
+            cloud_map_options=ecs.CloudMapOptions(
+                name="controller", dns_record_type=sd.DnsRecordType("A")
+            ),
         )
 
         controller_service = fargate_service.service
         controller_task = controller_service.task_definition
+
+        # Mount EFS volume
+        ecs_cluster.filesystem.connections.allow_default_port_from(controller_service)
+        access_point = ecs_cluster.filesystem.add_access_point(
+            "AccessPoint",
+            path="/jenkins-home",
+            posix_user=aws_efs.PosixUser(gid="1000", uid="1000"),
+            create_acl=aws_efs.Acl(
+                owner_gid="1000", owner_uid="1000", permissions="750"
+            ),
+        )
+        controller_task.add_volume(
+            name="jenkins-home",
+            efs_volume_configuration=ecs.EfsVolumeConfiguration(
+                file_system_id=ecs_cluster.filesystem.file_system_id,
+                transit_encryption="ENABLED",
+                authorization_config=ecs.AuthorizationConfig(
+                    access_point_id=access_point.access_point_id,
+                    iam="ENABLED",
+                ),
+            ),
+        )
+        controller_task.default_container.add_mount_points(
+            ecs.MountPoint(
+                container_path="/var/jenkins_home",
+                source_volume="jenkins-home",
+                read_only=False,
+            )
+        )
 
         # Opening port 5000 for controller <--> agent communications
         controller_service.task_definition.default_container.add_port_mappings(

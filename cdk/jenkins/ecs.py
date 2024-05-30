@@ -2,6 +2,8 @@ from configparser import ConfigParser
 
 from aws_cdk import (
     aws_ecs,
+    aws_efs,
+    RemovalPolicy,
     Stack,
 )
 from constructs import Construct
@@ -24,4 +26,13 @@ class ECSCluster(Construct):
             default_cloud_map_namespace=aws_ecs.CloudMapNamespaceOptions(
                 name=service_discovery_namespace
             ),
+        )
+
+        self.filesystem = aws_efs.FileSystem(
+            self,
+            "FileSystem",
+            vpc=network.vpc,
+            encrypted=True,
+            lifecycle_policy=aws_efs.LifecyclePolicy.AFTER_7_DAYS,
+            removal_policy=RemovalPolicy.DESTROY,
         )
