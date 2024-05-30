@@ -23,9 +23,9 @@ ecs_cluster = ECSCluster(app, stack_name + 'ECS', vpc=network.vpc, service_disco
 jenkins_workers = JenkinsWorker(app, stack_name + "Worker", vpc=network.vpc, cluster=ecs_cluster)
 jenkins_leader_service = JenkinsLeader(app, stack_name + 'JenkinsLeader', cluster=ecs_cluster, vpc=network, worker=jenkins_workers)
 
-core.Tag.add(app, key='Name', value=stack_name)
-core.Tag.add(app, key='Department', value='501')
-core.Tag.add(app, key='DevTeam', value='Voyager')
-core.Tag.add(app, key='Environment', value='Development')
+core.Tags.of(app).add(key='Name', value=stack_name)
+core.Tags.of(app).add(key='Department', value='501')
+core.Tags.of(app).add(key='DevTeam', value='Voyager')
+core.Tags.of(app).add(key='Environment', value='Development')
 
 app.synth()
