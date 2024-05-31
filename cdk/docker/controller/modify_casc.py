@@ -26,6 +26,7 @@ def main():
                 ADMIN_USERNAME=getenv("admin_username"),
                 ADMIN_PASSWORD=getenv("admin_password"),
                 SIMPLE_AGENT_IMAGE=getenv("simple_agent_image"),
+                EXTERNAL_AGENT_TASK_DEF=getenv("external_agent_task_def"),
             )
         )
     )

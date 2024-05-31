@@ -49,6 +49,7 @@ class JenkinsController(Construct):
                 # https://github.com/jenkinsci/configuration-as-code-plugin/blob/master/README.md#getting-started
                 "CASC_JENKINS_CONFIG": "/config-as-code.yaml",
                 "TZ": "America/Vancouver",
+                # Template parameters
                 "stack_name": scope.stack_name,
                 "cluster_arn": ecs_cluster.cluster.cluster_arn,
                 "aws_region": config["DEFAULT"]["region"],
@@ -64,6 +65,7 @@ class JenkinsController(Construct):
                 "admin_username": os.environ["ADMIN_USERNAME"],
                 "admin_password": os.environ["ADMIN_PASSWORD"],
                 "simple_agent_image": agent.simple_agent.container_image.image_uri,
+                "external_agent_task_def": agent.complex_agent.task_def.task_definition_arn,
             },
         )
 

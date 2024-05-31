@@ -3,6 +3,7 @@ from configparser import ConfigParser
 from aws_cdk import (
     aws_ecr_assets as ecr,
     aws_ec2 as ec2,
+    aws_ecs as ecs,
     aws_iam as iam,
     aws_logs as logs,
     Stack,
@@ -16,9 +17,8 @@ config.read("config.ini")
 
 
 class JenkinsAgent(Construct):
-
-    def __init__(self, scope: Stack, network: Network) -> None:
-        super().__init__(scope, "Agent")
+    def __init__(self, stack: Stack, network: Network) -> None:
+        super().__init__(stack, "Agent")
 
         # Security group to connect agents to controller
         self.security_group = ec2.SecurityGroup(
@@ -62,13 +62,60 @@ class JenkinsAgent(Construct):
             log_group=self.log_group,
         )
 
-        self.simple_agent = DockerAgent(self, "Simple", "docker/agents/simple")
+        self.simple_agent = SimpleAgent(self, "Simple")
+        self.complex_agent = ComplexAgent(self, "Complex", stack)
 
 
-class DockerAgent(Construct):
-    def __init__(self, scope: Construct, id: str, directory: str) -> None:
+class SimpleAgent(Construct):
+    def __init__(self, scope: JenkinsAgent, id: str) -> None:
         super().__init__(scope, id)
 
         self.container_image = ecr.DockerImageAsset(
-            self, "DockerImage", directory=directory
+            self, "DockerImage", directory="docker/agents/simple"
+        )
+
+
+class ComplexAgent(Construct):
+    """
+    This example weaves together sidecar containers that can be used from Jenkins.
+    """
+
+    def __init__(self, scope: JenkinsAgent, id: str, stack: Stack) -> None:
+        super().__init__(scope, id)
+
+        self.task_def = ecs.FargateTaskDefinition(
+            self,
+            "TaskDef",
+            family=f"{stack.stack_name}-complex-agent",
+            cpu=2048,
+            memory_limit_mib=4096,
+            # runtime_platform=ecs.RuntimePlatform(cpu_architecture=ecs.CpuArchitecture.X86_64, operating_system_family=ecs.OperatingSystemFamily.LINUX),
+            task_role=scope.task_role,
+            execution_role=scope.execution_role,
+        )
+
+        logging = ecs.LogDrivers.aws_logs(
+            stream_prefix="complex",
+            log_group=scope.log_group,
+        )
+        self.task_def.add_container(
+            "jnlp",
+            image=ecs.ContainerImage.from_docker_image_asset(
+                ecr.DockerImageAsset(
+                    self, "JnlpImage", directory="docker/agents/complex/jnlp"
+                )
+            ),
+            logging=logging,
+        )
+        self.task_def.add_container(
+            "postgres",
+            image=ecs.ContainerImage.from_docker_image_asset(
+                ecr.DockerImageAsset(
+                    self, "PostgresImage", directory="docker/agents/complex/postgres"
+                )
+            ),
+            environment={
+                "POSTGRES_PASSWORD": "password",
+            },
+            logging=logging,
         )
