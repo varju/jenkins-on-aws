@@ -39,6 +39,7 @@ class JenkinsController(Construct):
 
         # Task definition details to define the Jenkins controller container
         self.jenkins_task = ecs_patterns.ApplicationLoadBalancedTaskImageOptions(
+            family=f"{scope.stack_name}-controller",
             image=ecs.ContainerImage.from_docker_image_asset(self.container_image),
             container_port=8080,
             enable_logging=True,
@@ -79,7 +80,12 @@ class JenkinsController(Construct):
             cloud_map_options=ecs.CloudMapOptions(
                 name="controller", dns_record_type=sd.DnsRecordType("A")
             ),
+            min_healthy_percent=0,
+            max_healthy_percent=100,
         )
+
+        # Reduce time ALB waits when draining tasks; service downtimes will be announced ahead of time
+        fargate_service.target_group.set_attribute("deregistration_delay.timeout_seconds", "0")
 
         controller_service = fargate_service.service
         controller_task = controller_service.task_definition
