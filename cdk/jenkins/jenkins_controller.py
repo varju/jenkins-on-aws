@@ -47,6 +47,7 @@ class JenkinsController(Construct):
                 "JAVA_OPTS": "-Djenkins.install.runSetupWizard=false",
                 # https://github.com/jenkinsci/configuration-as-code-plugin/blob/master/README.md#getting-started
                 "CASC_JENKINS_CONFIG": "/config-as-code.yaml",
+                "TZ": "America/Vancouver",
                 "stack_name": scope.stack_name,
                 "cluster_arn": ecs_cluster.cluster.cluster_arn,
                 "aws_region": config["DEFAULT"]["region"],
@@ -61,7 +62,7 @@ class JenkinsController(Construct):
                 "agent_log_stream_prefix": agent.log_stream.log_stream_name,
                 "admin_username": os.environ["ADMIN_USERNAME"],
                 "admin_password": os.environ["ADMIN_PASSWORD"],
-                "TZ": "America/Vancouver",
+                "simple_agent_image": agent.simple_agent.container_image.image_uri,
             },
         )
 

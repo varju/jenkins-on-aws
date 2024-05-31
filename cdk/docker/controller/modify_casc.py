@@ -25,6 +25,7 @@ def main():
                 LOG_STREAM_PREFIX=getenv("agent_log_stream_prefix"),
                 ADMIN_USERNAME=getenv("admin_username"),
                 ADMIN_PASSWORD=getenv("admin_password"),
+                SIMPLE_AGENT_IMAGE=getenv("simple_agent_image"),
             )
         )
     )

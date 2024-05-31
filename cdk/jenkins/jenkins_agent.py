@@ -20,10 +20,6 @@ class JenkinsAgent(Construct):
     def __init__(self, scope: Stack, network: Network) -> None:
         super().__init__(scope, "Agent")
 
-        self.container_image = ecr.DockerImageAsset(
-            self, "DockerImage", directory="./docker/agent/"
-        )
-
         # Security group to connect agents to controller
         self.security_group = ec2.SecurityGroup(
             self,
@@ -64,4 +60,15 @@ class JenkinsAgent(Construct):
             self,
             "LogStream",
             log_group=self.log_group,
+        )
+
+        self.simple_agent = DockerAgent(self, "Simple", "docker/agents/simple")
+
+
+class DockerAgent(Construct):
+    def __init__(self, scope: Construct, id: str, directory: str) -> None:
+        super().__init__(scope, id)
+
+        self.container_image = ecr.DockerImageAsset(
+            self, "DockerImage", directory=directory
         )

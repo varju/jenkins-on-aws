@@ -10,8 +10,7 @@ jenkins:
         templates:
           - label: fargate-agent
             templateName: fargate-agent
-            # Build image and store in ECR. Benefits: fast download time, control image on your own
-            image: jenkins/inbound-agent
+            image: {{SIMPLE_AGENT_IMAGE}}
             launchType: FARGATE
             networkMode: awsvpc
             # Soft memory limit
