@@ -8,8 +8,8 @@ jenkins:
         name: {{STACK_NAME}}
         jenkinsUrl: {{JENKINS_URL}}
         templates:
-          - label: jenkins-agent
-            templateName: jenkins-agent-template
+          - label: fargate-agent
+            templateName: fargate-agent
             # Build image and store in ECR. Benefits: fast download time, control image on your own
             image: jenkins/inbound-agent
             launchType: FARGATE
