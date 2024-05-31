@@ -5,7 +5,7 @@ jenkins:
         # Credentials should not be set locally. Use IAM roles assigned to the container.
         credentialsId: False
         regionName: {{AWS_REGION}}
-        name: jenkins-fargate
+        name: {{STACK_NAME}}
         jenkinsUrl: {{JENKINS_URL}}
         templates:
           - label: jenkins-agent

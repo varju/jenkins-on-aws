@@ -47,6 +47,7 @@ class JenkinsController(Construct):
                 "JAVA_OPTS": "-Djenkins.install.runSetupWizard=false",
                 # https://github.com/jenkinsci/configuration-as-code-plugin/blob/master/README.md#getting-started
                 "CASC_JENKINS_CONFIG": "/config-as-code.yaml",
+                "stack_name": scope.stack_name,
                 "cluster_arn": ecs_cluster.cluster.cluster_arn,
                 "aws_region": config["DEFAULT"]["region"],
                 "jenkins_url": config["DEFAULT"]["jenkins_url"],
@@ -167,8 +168,8 @@ class JenkinsController(Construct):
             iam.PolicyStatement(
                 actions=["ecs:RunTask"],
                 resources=[
-                    "arn:aws:ecs:{0}:{1}:task-definition/jenkins-fargate*".format(
-                        scope.region, scope.account
+                    "arn:aws:ecs:{0}:{1}:task-definition/{2}*".format(
+                        scope.region, scope.account, scope.stack_name,
                     )
                 ],
             )
