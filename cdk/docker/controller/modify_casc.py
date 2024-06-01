@@ -28,6 +28,9 @@ def main():
                 SIMPLE_AGENT_IMAGE=getenv("simple_agent_image"),
                 EXTERNAL_AGENT_TASK_DEF=getenv("external_agent_task_def"),
                 FAT_AGENT_IMAGE=getenv("fat_agent_image"),
+                GH_CREDENTIAL_ID=getenv("gh_credential_id"),
+                GH_CREDENTIAL_APP_ID=getenv("gh_credential_app_id"),
+                GH_CREDENTIAL_PRIVATE_KEY=getenv("gh_credential_private_key"),
             )
         )
     )

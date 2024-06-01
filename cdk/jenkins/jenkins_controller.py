@@ -67,6 +67,9 @@ class JenkinsController(Construct):
                 "simple_agent_image": agent.simple_agent.container_image.image_uri,
                 "external_agent_task_def": agent.complex_agent.task_def.task_definition_arn,
                 "fat_agent_image": agent.fat_agent.container_image.image_uri,
+                "gh_credential_id": os.environ["GH_CREDENTIAL_ID"],
+                "gh_credential_app_id": os.environ["GH_CREDENTIAL_APP_ID"],
+                "gh_credential_private_key": os.environ["GH_CREDENTIAL_PRIVATE_KEY"],
             },
         )
 
@@ -88,7 +91,9 @@ class JenkinsController(Construct):
         )
 
         # Reduce time ALB waits when draining tasks; service downtimes will be announced ahead of time
-        fargate_service.target_group.set_attribute("deregistration_delay.timeout_seconds", "0")
+        fargate_service.target_group.set_attribute(
+            "deregistration_delay.timeout_seconds", "0"
+        )
 
         controller_service = fargate_service.service
         controller_task = controller_service.task_definition
@@ -179,7 +184,9 @@ class JenkinsController(Construct):
                 actions=["ecs:RunTask"],
                 resources=[
                     "arn:aws:ecs:{0}:{1}:task-definition/{2}*".format(
-                        scope.region, scope.account, scope.stack_name,
+                        scope.region,
+                        scope.account,
+                        scope.stack_name,
                     )
                 ],
             )
