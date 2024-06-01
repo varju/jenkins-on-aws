@@ -1,0 +1,10 @@
+#!/bin/bash
+set -e
+
+cd /usr/share/jenkins
+
+# Pull down the current server's jar
+curl --insecure --location --show-error --silent --output agent.jar $JENKINS_URL/jnlpJars/agent.jar
+
+# Launch the JNLP daemon
+./upstream-jnlp-start "$@"

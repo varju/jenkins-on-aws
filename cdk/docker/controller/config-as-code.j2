@@ -12,9 +12,9 @@ jenkins:
             templateName: fargate-agent
             image: {{SIMPLE_AGENT_IMAGE}}
             launchType: FARGATE
-            networkMode: awsvpc
-            memoryReservation: 2048
             cpu: 1024
+            memoryReservation: 2048
+            networkMode: awsvpc
             subnets: {{SUBNET_IDS}}
             securityGroups: {{SECURITY_GROUP_IDS}}
             executionRole: {{EXECUTION_ROLE_ARN}}
@@ -37,10 +37,38 @@ jenkins:
               value: Development
           - label: external
             templateName: external
-            # image: {{SIMPLE_AGENT_IMAGE}}
             taskDefinitionOverride: {{EXTERNAL_AGENT_TASK_DEF}}
             agentContainerName: jnlp
             launchType: FARGATE
+            networkMode: awsvpc
+            subnets: {{SUBNET_IDS}}
+            securityGroups: {{SECURITY_GROUP_IDS}}
+            executionRole: {{EXECUTION_ROLE_ARN}}
+            taskrole: {{TASK_ROLE_ARN}}
+            logDriver: awslogs
+            logDriverOptions:
+              - name: awslogs-region
+                value: {{AWS_REGION}}
+              - name: awslogs-group
+                value: {{LOG_GROUP}}
+              - name: awslogs-stream-prefix
+                value: {{LOG_STREAM_PREFIX}}
+            tags:
+            - name: Department
+              value: "501"
+            - name: DevTeam
+              value: Voyager
+            - name: Environment
+              value: Development
+          - label: fat
+            templateName: fat
+            image: {{FAT_AGENT_IMAGE}}
+            environments:
+            - name: JENKINS_URL
+              value: {{JENKINS_URL}}
+            launchType: FARGATE
+            cpu: 1024
+            memoryReservation: 2048
             networkMode: awsvpc
             subnets: {{SUBNET_IDS}}
             securityGroups: {{SECURITY_GROUP_IDS}}

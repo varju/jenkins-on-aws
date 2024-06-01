@@ -62,13 +62,14 @@ class JenkinsAgent(Construct):
             log_group=self.log_group,
         )
 
-        self.simple_agent = SimpleAgent(self, "Simple")
-        self.complex_agent = ComplexAgent(self, "Complex", stack)
+        self.simple_agent = SimpleAgent(self)
+        self.complex_agent = ComplexAgent(self, stack)
+        self.fat_agent = FatAgent(self)
 
 
 class SimpleAgent(Construct):
-    def __init__(self, scope: JenkinsAgent, id: str) -> None:
-        super().__init__(scope, id)
+    def __init__(self, scope: JenkinsAgent) -> None:
+        super().__init__(scope, "Simple")
 
         self.container_image = ecr.DockerImageAsset(
             self, "DockerImage", directory="docker/agents/simple"
@@ -80,8 +81,8 @@ class ComplexAgent(Construct):
     This example weaves together sidecar containers that can be used from Jenkins.
     """
 
-    def __init__(self, scope: JenkinsAgent, id: str, stack: Stack) -> None:
-        super().__init__(scope, id)
+    def __init__(self, scope: JenkinsAgent, stack: Stack) -> None:
+        super().__init__(scope, "Complex")
 
         self.task_def = ecs.FargateTaskDefinition(
             self,
@@ -118,4 +119,13 @@ class ComplexAgent(Construct):
                 "POSTGRES_PASSWORD": "password",
             },
             logging=logging,
+        )
+
+
+class FatAgent(Construct):
+    def __init__(self, scope: JenkinsAgent) -> None:
+        super().__init__(scope, "Fat")
+
+        self.container_image = ecr.DockerImageAsset(
+            self, "DockerImage", directory="docker/agents/fat"
         )

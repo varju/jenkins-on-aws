@@ -66,6 +66,7 @@ class JenkinsController(Construct):
                 "admin_password": os.environ["ADMIN_PASSWORD"],
                 "simple_agent_image": agent.simple_agent.container_image.image_uri,
                 "external_agent_task_def": agent.complex_agent.task_def.task_definition_arn,
+                "fat_agent_image": agent.fat_agent.container_image.image_uri,
             },
         )
 
