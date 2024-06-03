@@ -26,6 +26,7 @@ class ECSCluster(Construct):
             default_cloud_map_namespace=aws_ecs.CloudMapNamespaceOptions(
                 name=service_discovery_namespace
             ),
+            container_insights=True,
         )
 
         self.filesystem = aws_efs.FileSystem(
