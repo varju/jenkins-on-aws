@@ -98,7 +98,9 @@ jenkins:
   authorizationStrategy:
     loggedInUsersCanDoAnything:
       allowAnonymousRead: true
-  numExecutors: 0
+  numExecutors: 2
+  labelString: built-in
+  mode: EXCLUSIVE
 credentials:
   system:
     domainCredentials:
