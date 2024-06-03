@@ -1,8 +1,10 @@
 amazon-ecs
+ansicolor
 blueocean
-#pipeline-cloudwatch-logs
 configuration-as-code
+github-branch-source
+job-dsl
 json-path-api
-
-# Edit this line to trigger an update to all plugins
-# Forced update: 2024-05-31
+rebuild
+timestamper
+workflow-multibranch
