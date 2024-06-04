@@ -105,6 +105,9 @@ jenkins:
         value: "fargate-agent"
       - key: AGENT_LABEL_POSTGRES_12
         value: "fargate-postgres-12"
+  disabledAdministrativeMonitors:
+  # We only use the controller's executors in rare cases where we want fast-starting, short-lived agent
+  - "jenkins.diagnostics.ControllerExecutorsAgents"
 credentials:
   system:
     domainCredentials:
