@@ -64,7 +64,7 @@ class JenkinsAgent(Construct):
 
         self.simple_agent = SimpleAgent(self)
         self.complex_agent = ComplexAgent(self, stack)
-        self.fat_agent = FatAgent(self)
+        self.java11_agent = Java11Agent(self)
 
 
 class SimpleAgent(Construct):
@@ -122,10 +122,10 @@ class ComplexAgent(Construct):
         )
 
 
-class FatAgent(Construct):
+class Java11Agent(Construct):
     def __init__(self, scope: JenkinsAgent) -> None:
-        super().__init__(scope, "Fat")
+        super().__init__(scope, "Java11")
 
         self.container_image = ecr.DockerImageAsset(
-            self, "DockerImage", directory="docker/agents/fat"
+            self, "DockerImage", directory="docker/agents/java11"
         )

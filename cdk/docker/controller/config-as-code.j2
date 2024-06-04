@@ -27,6 +27,9 @@ jenkins:
                 value: {{LOG_GROUP}}
               - name: awslogs-stream-prefix
                 value: {{LOG_STREAM_PREFIX}}
+            environments:
+              - name: JENKINS_URL
+                value: {{JENKINS_URL}}
             tags:
             # TODO: Inject from CDK
             - name: Department
@@ -53,6 +56,9 @@ jenkins:
                 value: {{LOG_GROUP}}
               - name: awslogs-stream-prefix
                 value: {{LOG_STREAM_PREFIX}}
+            environments:
+              - name: JENKINS_URL
+                value: {{JENKINS_URL}}
             tags:
             - name: Department
               value: "501"
@@ -62,10 +68,7 @@ jenkins:
               value: Development
           - label: fat
             templateName: fat
-            image: {{FAT_AGENT_IMAGE}}
-            environments:
-            - name: JENKINS_URL
-              value: {{JENKINS_URL}}
+            image: {{AGENT_IMAGE_JAVA_11}}
             launchType: FARGATE
             cpu: 1024
             memoryReservation: 2048
@@ -101,6 +104,13 @@ jenkins:
   numExecutors: 2
   labelString: built-in
   mode: EXCLUSIVE
+  globalNodeProperties:
+  - envVars:
+      env:
+      - key: IS_FARGATE
+        value: "true"
+      - key: AGENT_IMAGE_JAVA_11
+        value: "{{AGENT_IMAGE_JAVA_11}}"
 credentials:
   system:
     domainCredentials:
