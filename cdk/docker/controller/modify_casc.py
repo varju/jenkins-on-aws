@@ -26,7 +26,7 @@ def main():
                 ADMIN_USERNAME=getenv("admin_username"),
                 ADMIN_PASSWORD=getenv("admin_password"),
                 SIMPLE_AGENT_IMAGE=getenv("simple_agent_image"),
-                EXTERNAL_AGENT_TASK_DEF=getenv("external_agent_task_def"),
+                POSTGRES12_TASK_DEF=getenv("postgres12_task_def"),
                 AGENT_IMAGE_JAVA_11=getenv("agent_image_java_11"),
                 GH_CREDENTIAL_ID=getenv("gh_credential_id"),
                 GH_CREDENTIAL_APP_ID=getenv("gh_credential_app_id"),

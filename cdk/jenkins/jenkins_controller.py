@@ -65,7 +65,7 @@ class JenkinsController(Construct):
                 "admin_username": os.environ["ADMIN_USERNAME"],
                 "admin_password": os.environ["ADMIN_PASSWORD"],
                 "simple_agent_image": agent.simple_agent.container_image.image_uri,
-                "external_agent_task_def": agent.complex_agent.task_def.task_definition_arn,
+                "postgres12_task_def": agent.postgres12_task_def.task_def.task_definition_arn,
                 "agent_image_java_11": agent.java11_agent.container_image.image_uri,
                 "gh_credential_id": os.environ["GH_CREDENTIAL_ID"],
                 "gh_credential_app_id": os.environ["GH_CREDENTIAL_APP_ID"],

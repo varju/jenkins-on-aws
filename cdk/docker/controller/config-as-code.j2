@@ -38,24 +38,14 @@ jenkins:
               value: Voyager
             - name: Environment
               value: Development
-          - label: external
-            templateName: external
-            taskDefinitionOverride: {{EXTERNAL_AGENT_TASK_DEF}}
+          - label: fargate-postgres-12
+            templateName: postgres-12
+            taskDefinitionOverride: {{POSTGRES12_TASK_DEF}}
             agentContainerName: jnlp
             launchType: FARGATE
             networkMode: awsvpc
             subnets: {{SUBNET_IDS}}
             securityGroups: {{SECURITY_GROUP_IDS}}
-            executionRole: {{EXECUTION_ROLE_ARN}}
-            taskrole: {{TASK_ROLE_ARN}}
-            logDriver: awslogs
-            logDriverOptions:
-              - name: awslogs-region
-                value: {{AWS_REGION}}
-              - name: awslogs-group
-                value: {{LOG_GROUP}}
-              - name: awslogs-stream-prefix
-                value: {{LOG_STREAM_PREFIX}}
             environments:
               - name: JENKINS_URL
                 value: {{JENKINS_URL}}
@@ -111,6 +101,10 @@ jenkins:
         value: "true"
       - key: AGENT_IMAGE_JAVA_11
         value: "{{AGENT_IMAGE_JAVA_11}}"
+      - key: AGENT_LABEL_DEFAULT
+        value: "fargate-agent"
+      - key: AGENT_LABEL_POSTGRES_12
+        value: "fargate-postgres-12"
 credentials:
   system:
     domainCredentials:

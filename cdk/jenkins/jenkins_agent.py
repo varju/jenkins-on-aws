@@ -63,8 +63,8 @@ class JenkinsAgent(Construct):
         )
 
         self.simple_agent = SimpleAgent(self)
-        self.complex_agent = ComplexAgent(self, stack)
         self.java11_agent = Java11Agent(self)
+        self.postgres12_task_def = Postgres12TaskDefinition(self, stack)
 
 
 class SimpleAgent(Construct):
@@ -76,7 +76,16 @@ class SimpleAgent(Construct):
         )
 
 
-class ComplexAgent(Construct):
+class Java11Agent(Construct):
+    def __init__(self, scope: JenkinsAgent) -> None:
+        super().__init__(scope, "Java11")
+
+        self.container_image = ecr.DockerImageAsset(
+            self, "DockerImage", directory="docker/agents/java11"
+        )
+
+
+class Postgres12TaskDefinition(Construct):
     """
     This example weaves together sidecar containers that can be used from Jenkins.
     """
@@ -90,7 +99,6 @@ class ComplexAgent(Construct):
             family=f"{stack.stack_name}-complex-agent",
             cpu=2048,
             memory_limit_mib=4096,
-            # runtime_platform=ecs.RuntimePlatform(cpu_architecture=ecs.CpuArchitecture.X86_64, operating_system_family=ecs.OperatingSystemFamily.LINUX),
             task_role=scope.task_role,
             execution_role=scope.execution_role,
         )
@@ -103,7 +111,7 @@ class ComplexAgent(Construct):
             "jnlp",
             image=ecs.ContainerImage.from_docker_image_asset(
                 ecr.DockerImageAsset(
-                    self, "JnlpImage", directory="docker/agents/complex/jnlp"
+                    self, "JnlpImage", directory="docker/agents/postgres12/jnlp"
                 )
             ),
             logging=logging,
@@ -112,20 +120,11 @@ class ComplexAgent(Construct):
             "postgres",
             image=ecs.ContainerImage.from_docker_image_asset(
                 ecr.DockerImageAsset(
-                    self, "PostgresImage", directory="docker/agents/complex/postgres"
+                    self, "PostgresImage", directory="docker/agents/postgres12/postgres"
                 )
             ),
             environment={
                 "POSTGRES_PASSWORD": "password",
             },
             logging=logging,
-        )
-
-
-class Java11Agent(Construct):
-    def __init__(self, scope: JenkinsAgent) -> None:
-        super().__init__(scope, "Java11")
-
-        self.container_image = ecr.DockerImageAsset(
-            self, "DockerImage", directory="docker/agents/java11"
         )
