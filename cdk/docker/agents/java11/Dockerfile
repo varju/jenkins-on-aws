@@ -1,4 +1,14 @@
+FROM --platform=linux/amd64 gcr.io/kaniko-project/executor:debug AS kaniko
+
 FROM 392477962641.dkr.ecr.us-east-1.amazonaws.com/saas/corretto-java11-build:3194
+
+# Copy kaniko assets
+#USER root
+COPY --from=kaniko --chown=jenkins:jenkins /kaniko/ /kaniko/
+#ENV SSL_CERT_DIR /kaniko/ssl/certs
+#ENV PATH $PATH:/usr/local/bin:/kaniko
+#ENV DOCKER_CONFIG /kaniko/.docker/
+#USER jenkins
 
 RUN \
   curl --location --show-error --silent \
