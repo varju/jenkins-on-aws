@@ -70,6 +70,7 @@ class JenkinsController(Construct):
                 "gh_credential_id": os.environ["GH_CREDENTIAL_ID"],
                 "gh_credential_app_id": os.environ["GH_CREDENTIAL_APP_ID"],
                 "gh_credential_private_key": os.environ["GH_CREDENTIAL_PRIVATE_KEY"],
+                "gh_credential_owner": os.environ["GH_CREDENTIAL_OWNER"],
             },
         )
 

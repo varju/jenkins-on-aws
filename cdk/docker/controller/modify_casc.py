@@ -31,6 +31,7 @@ def main():
                 GH_CREDENTIAL_ID=getenv("gh_credential_id"),
                 GH_CREDENTIAL_APP_ID=getenv("gh_credential_app_id"),
                 GH_CREDENTIAL_PRIVATE_KEY=getenv("gh_credential_private_key"),
+                GH_CREDENTIAL_OWNER=getenv("gh_credential_owner"),
             )
         )
     )
