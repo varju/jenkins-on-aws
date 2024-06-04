@@ -40,13 +40,6 @@ class JenkinsAgent(Construct):
                 "service-role/AmazonECSTaskExecutionRolePolicy"
             )
         )
-        self.execution_role.add_to_policy(
-            iam.PolicyStatement(
-                # ecr:GetAuthorizationToken
-                actions=["ecr:*"],
-                resources=["*"],
-            )
-        )
 
         # Task role for agent containers - add to this role for any aws resources that jenkins requires access to
         self.task_role = iam.Role(
