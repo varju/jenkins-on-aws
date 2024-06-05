@@ -8,11 +8,12 @@ from aws_cdk import (
 )
 from constructs import Construct
 
+from .ecs import ECSCluster
 from .network import Network
 
 
 class JenkinsAgent(Construct):
-    def __init__(self, stack: Stack, network: Network) -> None:
+    def __init__(self, stack: Stack, network: Network, ecs_cluster: ECSCluster) -> None:
         super().__init__(stack, "Agent")
 
         # Security group to connect agents to controller
@@ -29,7 +30,6 @@ class JenkinsAgent(Construct):
             "ExecutionRole",
             assumed_by=iam.ServicePrincipal("ecs-tasks.amazonaws.com"),
         )
-
         self.execution_role.add_managed_policy(
             iam.ManagedPolicy.from_aws_managed_policy_name(
                 "service-role/AmazonECSTaskExecutionRolePolicy"
@@ -41,6 +41,36 @@ class JenkinsAgent(Construct):
             self,
             "TaskRole",
             assumed_by=iam.ServicePrincipal("ecs-tasks.amazonaws.com"),
+        )
+        # Enable SSM session manager access
+        self.task_role.add_to_policy(
+            iam.PolicyStatement(
+                actions=[
+                    "ssmmessages:CreateControlChannel",
+                    "ssmmessages:CreateDataChannel",
+                    "ssmmessages:OpenControlChannel",
+                    "ssmmessages:OpenDataChannel",
+                ],
+                resources=["*"],
+            )
+        )
+        self.task_role.add_to_policy(
+            iam.PolicyStatement(
+                actions=[
+                    "logs:DescribeLogGroups",
+                ],
+                resources=["*"],
+            )
+        )
+        self.task_role.add_to_policy(
+            iam.PolicyStatement(
+                actions=[
+                    "logs:CreateLogStream",
+                    "logs:DescribeLogStreams",
+                    "logs:PutLogEvents",
+                ],
+                resources=[ecs_cluster.exec_log_group.log_group_arn],
+            )
         )
 
         # Create log group for agents to log

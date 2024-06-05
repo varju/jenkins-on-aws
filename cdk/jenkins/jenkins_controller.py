@@ -108,6 +108,7 @@ class JenkinsController(Construct):
             ),
             min_healthy_percent=0,
             max_healthy_percent=100,
+            enable_execute_command=True,
         )
 
         # Reduce time ALB waits when draining tasks; service downtimes will be announced ahead of time

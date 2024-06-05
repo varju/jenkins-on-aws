@@ -3,6 +3,7 @@ from aws_cdk import (
     aws_ec2 as ec2,
     aws_ecs as ecs,
     aws_efs as efs,
+    aws_logs as logs,
     RemovalPolicy,
     Stack,
 )
@@ -16,6 +17,12 @@ class ECSCluster(Construct):
     def __init__(self, scope: Stack, network: Network, service_discovery_namespace):
         super().__init__(scope, "ECSCluster")
 
+        self.exec_log_group = logs.LogGroup(
+            self,
+            "ExecLogGroup",
+            retention=logs.RetentionDays.ONE_MONTH,
+        )
+
         self.cluster = ecs.Cluster(
             self,
             "Cluster",
@@ -24,6 +31,12 @@ class ECSCluster(Construct):
                 name=service_discovery_namespace
             ),
             container_insights=True,
+            execute_command_configuration=ecs.ExecuteCommandConfiguration(
+                logging=ecs.ExecuteCommandLogging.OVERRIDE,
+                log_configuration=ecs.ExecuteCommandLogConfiguration(
+                    cloud_watch_log_group=self.exec_log_group
+                ),
+            ),
         )
 
         self.filesystem = efs.FileSystem(
@@ -47,6 +60,7 @@ class ECSCluster(Construct):
             vpc_subnets=ec2.SubnetSelection(
                 subnet_type=ec2.SubnetType.PRIVATE_WITH_EGRESS
             ),
+            ssm_session_permissions=True,
         )
 
         self.capacity_provider = ecs.AsgCapacityProvider(

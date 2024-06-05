@@ -30,6 +30,7 @@ jenkins:
             environments:
               - name: JENKINS_URL
                 value: {{JENKINS_URL}}
+            enableExecuteCommand: true
             tags: {{TAGS}}
           - label: fargate-postgres-12
             templateName: postgres-12
@@ -42,6 +43,7 @@ jenkins:
             environments:
               - name: JENKINS_URL
                 value: {{JENKINS_URL}}
+            enableExecuteCommand: true
             tags: {{TAGS}}
           - label: fat
             templateName: fat
@@ -62,6 +64,7 @@ jenkins:
                 value: {{LOG_GROUP}}
               - name: awslogs-stream-prefix
                 value: {{LOG_STREAM_PREFIX}}
+            enableExecuteCommand: true
             tags: {{TAGS}}
           - label: ecs-ec2
             templateName: ecs-ec2

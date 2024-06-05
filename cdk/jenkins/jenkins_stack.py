@@ -24,6 +24,7 @@ class JenkinsStack(Stack):
         agent = JenkinsAgent(
             self,
             network=network,
+            ecs_cluster=ecs_cluster,
         )
         codebuild = CodeBuild(self)
         JenkinsController(
