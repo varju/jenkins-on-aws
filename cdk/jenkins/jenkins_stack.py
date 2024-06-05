@@ -1,6 +1,7 @@
 from aws_cdk import Stack
 from constructs import Construct
 
+from .codebuild import CodeBuild
 from .ecs import ECSCluster
 from .jenkins_agent import JenkinsAgent
 from .jenkins_controller import JenkinsController
@@ -24,9 +25,11 @@ class JenkinsStack(Stack):
             self,
             network=network,
         )
+        codebuild = CodeBuild(self, agent)
         JenkinsController(
             self,
             ecs_cluster=ecs_cluster,
             network=network,
             agent=agent,
+            codebuild=codebuild,
         )

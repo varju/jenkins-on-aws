@@ -13,6 +13,7 @@ from aws_cdk import (
 )
 from constructs import Construct
 
+from .codebuild import CodeBuild
 from .ecs import ECSCluster
 from .jenkins_agent import JenkinsAgent
 from .network import Network
@@ -29,6 +30,7 @@ class JenkinsController(Construct):
         ecs_cluster: ECSCluster,
         network: Network,
         agent: JenkinsAgent,
+        codebuild: CodeBuild,
     ) -> None:
         super().__init__(scope, "Controller")
 
@@ -54,6 +56,7 @@ class JenkinsController(Construct):
                 "cluster_arn": ecs_cluster.cluster.cluster_arn,
                 "aws_region": config["DEFAULT"]["region"],
                 "jenkins_url": config["DEFAULT"]["jenkins_url"],
+                "jenkins_public_url": os.environ["JENKINS_PUBLIC_URL"],
                 "subnet_ids": ",".join(
                     [x.subnet_id for x in network.vpc.private_subnets]
                 ),
@@ -71,6 +74,8 @@ class JenkinsController(Construct):
                 "gh_credential_app_id": os.environ["GH_CREDENTIAL_APP_ID"],
                 "gh_credential_private_key": os.environ["GH_CREDENTIAL_PRIVATE_KEY"],
                 "gh_credential_owner": os.environ["GH_CREDENTIAL_OWNER"],
+                "codebuild_project_name": codebuild.project.project_name,
+                "codebuild_image": codebuild.build_image.image_uri,
             },
         )
 
@@ -214,5 +219,19 @@ class JenkinsController(Construct):
                     agent.task_role.role_arn,
                     agent.execution_role.role_arn,
                 ],
+            )
+        )
+
+        controller_task.add_to_task_role_policy(
+            iam.PolicyStatement(
+                actions=[
+                    "codebuild:List*",
+                    "codebuild:Describe*",
+                    "codebuild:Get*",
+                    "codebuild:StartBuild",
+                    "codebuild:StopBuild",
+                    "codebuild:BatchGet*",
+                ],
+                resources=["*"],
             )
         )

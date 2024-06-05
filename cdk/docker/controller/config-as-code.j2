@@ -82,6 +82,35 @@ jenkins:
               value: Voyager
             - name: Environment
               value: Development
+    - codeBuild:
+        agentConnectTimeout: 180
+        buildSpec: |
+          version: 0.2
+          
+          phases:
+            pre_build:
+              commands:
+                - which dockerd-entrypoint.sh >/dev/null && dockerd-entrypoint.sh || exit 0
+            build:
+              commands:
+                - /usr/local/bin/jenkins-agent $JENKINS_CODEBUILD_PROXY_CREDENTIALS $JENKINS_CODEBUILD_DISABLE_SSL_VALIDATION $JENKINS_CODEBUILD_NORECONNECT -workDir /home/jenkins/agent
+        codeBuildProjectName: "{{CODEBUILD_PROJECT_NAME}}"
+        computeType: "BUILD_GENERAL1_SMALL"
+        disableHttpsCertValidation: false
+        dockerImage: "{{CODEBUILD_IMAGE}}"
+        dockerImagePullCredentials: "SERVICE_ROLE"
+        environmentType: "LINUX_CONTAINER"
+        # TODO: Chicken-and-egg problem here
+        jenkinsUrl: {{JENKINS_PUBLIC_URL}}
+        label: "codebuild-agent"
+        maxAgents: 50
+        name: "codebuild"
+        noKeepAlive: false
+        noReconnect: true
+        protocols: "JNLP4-connect"
+        region: "us-east-1"
+        verifyIsCodeBuildIPOnJNLP: false
+        webSocket: true
   securityRealm:
     local:
       allowsSignup: false

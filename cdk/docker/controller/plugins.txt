@@ -1,6 +1,7 @@
 amazon-ecs
 ansicolor
 blueocean
+codebuild-cloud
 configuration-as-code
 github-branch-source
 job-dsl

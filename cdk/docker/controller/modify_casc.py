@@ -17,6 +17,7 @@ def main():
                 ECS_CLUSTER_ARN=getenv("cluster_arn"),
                 AWS_REGION=getenv("aws_region"),
                 JENKINS_URL=getenv("jenkins_url"),
+                JENKINS_PUBLIC_URL=getenv("jenkins_public_url"),
                 SUBNET_IDS=getenv("subnet_ids"),
                 SECURITY_GROUP_IDS=getenv("security_group_ids"),
                 EXECUTION_ROLE_ARN=getenv("execution_role_arn"),
@@ -32,6 +33,8 @@ def main():
                 GH_CREDENTIAL_APP_ID=getenv("gh_credential_app_id"),
                 GH_CREDENTIAL_PRIVATE_KEY=getenv("gh_credential_private_key"),
                 GH_CREDENTIAL_OWNER=getenv("gh_credential_owner"),
+                CODEBUILD_PROJECT_NAME=getenv("codebuild_project_name"),
+                CODEBUILD_IMAGE=getenv("codebuild_image"),
             )
         )
     )
