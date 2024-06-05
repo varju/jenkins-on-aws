@@ -1,3 +1,4 @@
+import json
 import os
 from configparser import ConfigParser
 
@@ -82,6 +83,13 @@ class JenkinsController(Construct):
                 "gh_credential_private_key": os.environ["GH_CREDENTIAL_PRIVATE_KEY"],
                 "gh_credential_owner": os.environ["GH_CREDENTIAL_OWNER"],
                 "codebuild_project_name": codebuild.project.project_name,
+                "tags": json.dumps(
+                    [
+                        {"name": "Department", "value": "501"},
+                        {"name": "DevTeam", "value": "Voyager"},
+                        {"name": "Environment", "value": "Development"},
+                    ]
+                ),
             },
         )
 

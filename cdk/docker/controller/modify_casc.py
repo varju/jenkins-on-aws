@@ -5,8 +5,7 @@ from os import getenv
 
 
 def main():
-    # This value comes as a build env var: `SSM_CONFIG_PARAM_NAME`
-    _env = Environment(loader=FileSystemLoader("/"), autoescape=True)
+    _env = Environment(loader=FileSystemLoader("/"))
     _template = _env.get_template("/config-as-code.j2")
     _config_file = open("/config-as-code.yaml", "w")
 
@@ -34,6 +33,7 @@ def main():
                 GH_CREDENTIAL_PRIVATE_KEY=getenv("gh_credential_private_key"),
                 GH_CREDENTIAL_OWNER=getenv("gh_credential_owner"),
                 CODEBUILD_PROJECT_NAME=getenv("codebuild_project_name"),
+                TAGS=getenv("tags"),
             )
         )
     )
