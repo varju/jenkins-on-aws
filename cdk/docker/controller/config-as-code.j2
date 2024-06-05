@@ -82,6 +82,28 @@ jenkins:
               value: Voyager
             - name: Environment
               value: Development
+          - label: ecs-ec2
+            templateName: ecs-ec2
+            image: {{SIMPLE_AGENT_IMAGE}}
+            launchType: EC2
+            defaultCapacityProvider: true
+            cpu: 512
+            memoryReservation: 512
+            networkMode: bridge
+            subnets: {{SUBNET_IDS}}
+            securityGroups: {{SECURITY_GROUP_IDS}}
+            executionRole: {{EXECUTION_ROLE_ARN}}
+            taskrole: {{TASK_ROLE_ARN}}
+            privileged: true
+            enableExecuteCommand: true
+            tags:
+              # TODO: Inject from CDK
+              - name: Department
+                value: "501"
+              - name: DevTeam
+                value: Voyager
+              - name: Environment
+                value: Development
     - codeBuild:
         agentConnectTimeout: 180
         buildSpec: |

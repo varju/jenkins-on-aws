@@ -1,5 +1,3 @@
-from configparser import ConfigParser
-
 from aws_cdk import (
     aws_ecr_assets as ecr,
     aws_ec2 as ec2,
@@ -11,9 +9,6 @@ from aws_cdk import (
 from constructs import Construct
 
 from .network import Network
-
-config = ConfigParser()
-config.read("config.ini")
 
 
 class JenkinsAgent(Construct):

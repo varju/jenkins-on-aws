@@ -47,7 +47,14 @@ class JenkinsController(Construct):
             enable_logging=True,
             environment={
                 # https://github.com/jenkinsci/docker/blob/master/README.md#passing-jvm-parameters
-                "JAVA_OPTS": "-Djenkins.install.runSetupWizard=false",
+                "JAVA_OPTS": " ".join(
+                    [
+                        "-Djenkins.install.runSetupWizard=false",
+                        "-Dhudson.slaves.NodeProvisioner.initialDelay=0",
+                        "-Dhudson.slaves.NodeProvisioner.MARGIN=50",
+                        "-Dhudson.slaves.NodeProvisioner.MARGIN0=0.85",
+                    ]
+                ),
                 # https://github.com/jenkinsci/configuration-as-code-plugin/blob/master/README.md#getting-started
                 "CASC_JENKINS_CONFIG": "/config-as-code.yaml",
                 "TZ": "America/Vancouver",
@@ -137,27 +144,26 @@ class JenkinsController(Construct):
             ecs.PortMapping(container_port=50000, host_port=50000)
         )
 
-        # Enable connection between controller and agent
-        controller_service.connections.allow_from(
-            agent.security_group,
-            port_range=ec2.Port(
-                protocol=ec2.Protocol.TCP,
-                string_representation="controller to agent 50000",
-                from_port=50000,
-                to_port=50000,
-            ),
-        )
-
-        # Enable connection between controller and agent on 8080
-        controller_service.connections.allow_from(
-            agent.security_group,
-            port_range=ec2.Port(
-                protocol=ec2.Protocol.TCP,
-                string_representation="controller to agent 8080",
-                from_port=8080,
-                to_port=8080,
-            ),
-        )
+        # Enable connection between controller and agents
+        for port in [8080, 50000]:
+            controller_service.connections.allow_from(
+                agent.security_group,
+                port_range=ec2.Port(
+                    protocol=ec2.Protocol.TCP,
+                    string_representation=f"controller to fargate agent {port}",
+                    from_port=port,
+                    to_port=port,
+                ),
+            )
+            controller_service.connections.allow_from(
+                ecs_cluster.asg,
+                port_range=ec2.Port(
+                    protocol=ec2.Protocol.TCP,
+                    string_representation=f"controller to ec2 agent {port}",
+                    from_port=port,
+                    to_port=port,
+                ),
+            )
 
         # IAM Statements to allow jenkins ecs plugin to talk to ECS as well as the Jenkins cluster #
         controller_task.add_to_task_role_policy(
