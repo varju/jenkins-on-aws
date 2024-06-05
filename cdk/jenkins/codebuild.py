@@ -25,3 +25,25 @@ class CodeBuild(Construct):
                 }
             ),
         )
+
+        # Allow pushes
+        self.project.role.add_to_principal_policy(
+            iam.PolicyStatement(
+                actions=[
+                    "ecr:BatchCheckLayerAvailability",
+                    "ecr:CompleteLayerUpload",
+                    "ecr:InitiateLayerUpload",
+                    "ecr:PutImage",
+                    "ecr:UploadLayerPart",
+                ],
+                resources=[
+                    f"arn:aws:ecr:{stack.region}:{stack.account}:repository/{stack.stack_name}*",
+                ],
+            )
+        )
+        self.project.role.add_to_principal_policy(
+            iam.PolicyStatement(
+                actions=["ecr:GetAuthorizationToken"],
+                resources=["*"],
+            ),
+        )
