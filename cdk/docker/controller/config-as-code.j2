@@ -86,19 +86,21 @@ jenkins:
         agentConnectTimeout: 180
         buildSpec: |
           version: 0.2
-          
           phases:
-            pre_build:
+            install:
               commands:
-                - which dockerd-entrypoint.sh >/dev/null && dockerd-entrypoint.sh || exit 0
+                - curl --create-dirs -fsSLo /usr/share/jenkins/agent.jar $JENKINS_CODEBUILD_AGENT_URL
+                - curl --create-dirs -fsSLo /usr/share/jenkins/jenkins-agent https://raw.githubusercontent.com/jenkinsci/docker-agent/5c3469aa6b314fa2686b0565f41d9f3bd10a1a86/jenkins-agent
+                - chmod -R a+rX /usr/share/jenkins
+                - chmod +x /usr/share/jenkins/jenkins-agent
             build:
               commands:
-                - /usr/local/bin/jenkins-agent $JENKINS_CODEBUILD_PROXY_CREDENTIALS $JENKINS_CODEBUILD_DISABLE_SSL_VALIDATION $JENKINS_CODEBUILD_NORECONNECT -workDir /home/jenkins/agent
+                - /usr/share/jenkins/jenkins-agent $JENKINS_CODEBUILD_PROXY_CREDENTIALS $JENKINS_CODEBUILD_DISABLE_SSL_VALIDATION $JENKINS_CODEBUILD_NORECONNECT -workDir /home/jenkins/agent
         codeBuildProjectName: "{{CODEBUILD_PROJECT_NAME}}"
         computeType: "BUILD_GENERAL1_SMALL"
         disableHttpsCertValidation: false
-        dockerImage: "{{CODEBUILD_IMAGE}}"
-        dockerImagePullCredentials: "SERVICE_ROLE"
+        dockerImage: aws/codebuild/amazonlinux2-x86_64-standard:5.0
+        dockerImagePullCredentials: CODEBUILD
         environmentType: "LINUX_CONTAINER"
         # TODO: Chicken-and-egg problem here
         jenkinsUrl: {{JENKINS_PUBLIC_URL}}

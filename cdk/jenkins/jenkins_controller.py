@@ -75,7 +75,6 @@ class JenkinsController(Construct):
                 "gh_credential_private_key": os.environ["GH_CREDENTIAL_PRIVATE_KEY"],
                 "gh_credential_owner": os.environ["GH_CREDENTIAL_OWNER"],
                 "codebuild_project_name": codebuild.project.project_name,
-                "codebuild_image": codebuild.build_image.image_uri,
             },
         )
 

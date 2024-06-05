@@ -5,11 +5,9 @@ from aws_cdk import (
 )
 from constructs import Construct
 
-from .jenkins_agent import JenkinsAgent
-
 
 class CodeBuild(Construct):
-    def __init__(self, stack: Stack, agent: JenkinsAgent) -> None:
+    def __init__(self, stack: Stack) -> None:
         super().__init__(stack, "CodeBuild")
 
         self.project = codebuild.Project(
@@ -27,7 +25,3 @@ class CodeBuild(Construct):
                 }
             ),
         )
-
-        # Allow CodeBuild to pull image
-        self.build_image = agent.java11_agent.container_image
-        self.build_image.repository.grant_pull(self.project.role)

@@ -34,7 +34,6 @@ def main():
                 GH_CREDENTIAL_PRIVATE_KEY=getenv("gh_credential_private_key"),
                 GH_CREDENTIAL_OWNER=getenv("gh_credential_owner"),
                 CODEBUILD_PROJECT_NAME=getenv("codebuild_project_name"),
-                CODEBUILD_IMAGE=getenv("codebuild_image"),
             )
         )
     )
